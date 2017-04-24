@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:clickable="true"
+              android:foreground="?selectableItemBackground"
+              android:gravity="center_vertical"
+              android:minHeight="?listPreferredItemHeight"
+              android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:scaleType="centerInside"
+        android:tint="?colorPrimaryDark"
+        app:srcCompat="@drawable/ic_lightbulb_outline_black_24dp"/>
+
+    <TextView
+        android:id="@+id/text_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="@dimen/text_margin"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <Switch
+        android:id="@+id/switch_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/text_margin"/>
+
+</LinearLayout>
