@@ -1,6 +1,7 @@
 package sxwang.me.ohmyyeelight.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ import sxwang.me.ohmyyeelight.entity.Device;
 
 public class DeviceFragment extends BottomSheetDialogFragment {
 
-    public static DeviceFragment newInstance(Device device) {
+    public static DeviceFragment newInstance(@NonNull Device device) {
         DeviceFragment fragment = new DeviceFragment();
         Bundle args = new Bundle();
         args.putString("DEVICE_SOURCE_TEXT", device.getSourceText());

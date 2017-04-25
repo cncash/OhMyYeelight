@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClick(null, null);
+                onItemClick(null, Device.parse(""));
             }
         });
 

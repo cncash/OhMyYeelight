@@ -1,5 +1,6 @@
 package sxwang.me.ohmyyeelight;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.IOException;
@@ -119,10 +120,7 @@ public class DeviceController {
         return mDeviceSet;
     }
 
-    public void addOnDeviceSetChangeListener(OnDeviceSetChangeListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("listener cannot be null");
-        }
+    public void addOnDeviceSetChangeListener(@NonNull OnDeviceSetChangeListener listener) {
         mOnDeviceSetChangeListeners.add(listener);
     }
 
