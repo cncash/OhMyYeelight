@@ -116,6 +116,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * @see #sBindPreferenceSummaryToValueListener
      */
     private static void bindPreferenceSummaryToValue(Preference preference) {
+        if (preference == null) {
+            return;
+        }
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -197,8 +200,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("light_transition_duration"));
 
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
         }

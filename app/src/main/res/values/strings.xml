@@ -103,19 +103,18 @@
     <string name="pref_description_night_mode_on">Dark appearance</string>
     <string name="pref_description_night_mode_off">Light appearance</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_smooth_transition">Smooth light transition</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string name="pref_title_light_transition_duration">Light transition duration</string>
+    <string-array name="pref_transition_duration_titles">
+        <item>100ms</item>
+        <item>500ms</item>
+        <item>700ms</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
+    <string-array name="pref_transition_duration_values">
+        <item>100</item>
+        <item>500</item>
+        <item>700</item>
     </string-array>
 
     <!-- Settings for Data & Sync -->
