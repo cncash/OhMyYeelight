@@ -1,11 +1,16 @@
 package sxwang.me.ohmyyeelight.entity;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Shaoxing on 21/04/2017.
  */
 public class Device {
+    private static final Pattern HOST_PATTERN = Pattern.compile("yeelight://([\\d\\\\.]+):");
+    private static final Pattern PORT_PATTERN = Pattern.compile(":(\\d+)$");
+
     private String id;
     private String model = "Yeelight";
     private int firmwareVersion;
@@ -71,6 +76,26 @@ public class Device {
         this.location = location;
     }
 
+    public String getHost() {
+        if (location != null) {
+            Matcher matcher = HOST_PATTERN.matcher(location);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        }
+        return null;
+    }
+
+    public int getPort() {
+        if (location != null) {
+            Matcher matcher = PORT_PATTERN.matcher(location);
+            if (matcher.find()) {
+                return Integer.parseInt(matcher.group(1));
+            }
+        }
+        return 0;
+    }
+
     public String getSourceText() {
         return sourceText;
     }
@@ -112,7 +137,7 @@ public class Device {
                     case "model":
                         device.setModel(value);
                         break;
-                    case "location":
+                    case "Location":
                         device.setLocation(value);
                         break;
                     case "fw_version":
