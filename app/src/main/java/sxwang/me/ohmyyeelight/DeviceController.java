@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 import sxwang.me.ohmyyeelight.entity.Device;
+import sxwang.me.ohmyyeelight.interaction.Command;
+import sxwang.me.ohmyyeelight.interaction.Commander;
 
 /**
  * Created by Shaoxing on 24/04/2017.
@@ -71,6 +73,12 @@ public class DeviceController {
                     for (OnDeviceSetChangeListener listener : mOnDeviceSetChangeListeners) {
                         listener.OnNewDevice(this, device);
                     }
+                    Command command = Commander.newBuilder()
+                            .withHost(device.getHost())
+                            .withPort(device.getPort())
+                            .build()
+                            .create(Command.class);
+                    command.getProp("power", "bright", "ct");
                 }
             } catch (SocketTimeoutException e) {
                 socket.close();

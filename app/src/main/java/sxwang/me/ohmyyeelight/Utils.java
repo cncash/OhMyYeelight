@@ -22,4 +22,20 @@ public class Utils {
     public static boolean isNightMode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("night_mode", true);
     }
+
+    public static String toUnderlined(String s) {
+        char[] chars = s.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            if (Character.isUpperCase(chars[i])) {
+                if (i > 0 && !Character.isUpperCase(chars[i - 1])) {
+                    builder.append("_");
+                }
+                builder.append(Character.toLowerCase(chars[i]));
+            } else {
+                builder.append(chars[i]);
+            }
+        }
+        return builder.toString();
+    }
 }
