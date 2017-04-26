@@ -23,7 +23,6 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
     private DeviceAdapter mDeviceAdapter;
     private Handler mHandler = new Handler();
 
-    private Thread mSearchThread;
     private DeviceController mDeviceController = DeviceController.DEFAULT_INSTANCE;
 
     @Override
@@ -56,15 +55,16 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
         super.onResume();
 
         mDeviceAdapter.setData(null);
+        mDeviceController.setContinueSearching(true);
         mDeviceController.addOnDeviceSetChangeListener(this);
 
-        mSearchThread = new Thread(new Runnable() {
+        Thread searchThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 mDeviceController.searchDevice();
             }
         });
-        mSearchThread.start();
+        searchThread.start();
 
         Thread listenThread = new Thread(new Runnable() {
             @Override
