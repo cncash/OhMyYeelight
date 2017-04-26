@@ -5,12 +5,14 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -33,11 +35,10 @@ public class DeviceController {
     private static final int SEARCH_PORT = 1982;
     private static final String ADVERTISEMENT_HOST = "239.255.255.250";
     private static final int ADVERTISEMENT_PORT = 1982;
-    private static final String sSearchMessage = "M-SEARCH * HTTP/1.1\r\n" +
+    private static final String SEARCH_MESSAGE = "M-SEARCH * HTTP/1.1\r\n" +
             "HOST: 239.255.255.250:1982\r\n" +
             "MAN: \"ssdp:discover\"\r\n" +
             "ST: wifi_bulb\r\n";
-    private static int sLocalPort = 9090;
     private static int sTimeout = 3600;
 
     private volatile boolean mContinueSearching = true;
@@ -47,49 +48,55 @@ public class DeviceController {
     public void searchDevice() {
         mDeviceSet.clear();
 
-        DatagramSocket socket = null;
+        DatagramChannel channel = null;
         try {
-            socket = new DatagramSocket(sLocalPort);
-            socket.setSoTimeout(sTimeout);
+            final String TAG = "UDP CHANNEL";
+            channel = DatagramChannel.open();
+            channel.configureBlocking(false);
+            Selector selector = Selector.open();
+            channel.register(selector, SelectionKey.OP_READ);
 
-            byte[] bytes = sSearchMessage.getBytes();
-            DatagramPacket dgSend = new DatagramPacket(bytes, bytes.length, InetAddress.getByName(SEARCH_HOST), SEARCH_PORT);
-            byte[] recvBuffer = new byte[1024];
-            DatagramPacket dgRecv = new DatagramPacket(recvBuffer, recvBuffer.length);
+            byte[] recv = new byte[1024];
+            ByteBuffer buffer = ByteBuffer.wrap(recv);
 
-            try {
-                socket.send(dgSend);
-                while (mContinueSearching) {
-                    socket.receive(dgRecv);
-                    final String response = new String(dgRecv.getData(), dgRecv.getOffset(), dgRecv.getLength());
-                    dgRecv.setLength(recvBuffer.length);
+            channel.send(ByteBuffer.wrap(SEARCH_MESSAGE.getBytes()), new InetSocketAddress(SEARCH_HOST, SEARCH_PORT));
+            while (mContinueSearching) {
+                if (selector.select(100) > 0) {
+                    for (SelectionKey key : selector.selectedKeys()) {
+                        if (key.isValid() && key.isReadable() && key.channel() == channel) {
+                            buffer.clear();
+                            SocketAddress address = channel.receive(buffer);
+                            if (address != null) {
+                                String s = new String(recv, 0, buffer.position());
+                                Log.d(TAG, "==== received from " + address + "  ==== " + new Date());
+                                Log.d(TAG, s);
+                                Log.d(TAG, "==== end ====");
 
-                    Log.d("UDP", "==== received from " + dgRecv.getSocketAddress() + "  ==== " + new Date());
-                    Log.d("UDP", response);
-                    Log.d("UDP", "==== end ====");
-
-                    Device device = Device.parse(response);
-                    mDeviceSet.add(device);
-                    for (OnDeviceSetChangeListener listener : mOnDeviceSetChangeListeners) {
-                        listener.OnNewDevice(this, device);
+                                Device device = Device.parse(s);
+                                mDeviceSet.add(device);
+                                for (OnDeviceSetChangeListener listener : mOnDeviceSetChangeListeners) {
+                                    listener.OnNewDevice(this, device);
+                                }
+                                Command command = Commander.newBuilder()
+                                        .withHost(device.getHost())
+                                        .withPort(device.getPort())
+                                        .build()
+                                        .create(Command.class);
+                                command.getProp("power", "bright", "ct");
+                            }
+                        }
                     }
-                    Command command = Commander.newBuilder()
-                            .withHost(device.getHost())
-                            .withPort(device.getPort())
-                            .build()
-                            .create(Command.class);
-                    command.getProp("power", "bright", "ct");
                 }
-            } catch (SocketTimeoutException e) {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        } catch (SocketException | UnknownHostException e) {
+            selector.close();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (socket != null) {
-                socket.close();
+            if (channel != null) {
+                try {
+                    channel.close();
+                } catch (IOException ignored) {
+                }
             }
         }
     }
@@ -108,7 +115,7 @@ public class DeviceController {
             socket.receive(dgRecv);
 
             final String response = new String(dgRecv.getData(), dgRecv.getOffset(), dgRecv.getLength());
-            Log.d("UDP > NOTIFY", response);
+            Log.d("NOTIFY", response);
 
             socket.leaveGroup(group);
         } catch (IOException e1) {
