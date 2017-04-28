@@ -148,6 +148,7 @@ public class Device {
                         break;
                     case "ct":
                         device.setColorTemperature(Integer.parseInt(value));
+                        break;
                     case "power":
                         device.setOn(value.contains("on"));
                         break;
