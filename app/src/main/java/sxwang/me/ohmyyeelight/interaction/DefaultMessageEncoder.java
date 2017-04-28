@@ -34,17 +34,19 @@ public class DefaultMessageEncoder implements MessageEncoder {
 
     private String flatEncodeArray(Object[] args, boolean withBrackets) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] == null || args[i] instanceof Number || args[i] instanceof Boolean) {
-                builder.append(args[i]);
-            } else if (args[i].getClass().isArray()) {
-                builder.append(flatEncodeArray((Object[]) args[i], false));
-            } else {
-                builder.append("\"").append(args[i]).append("\"");
-            }
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] == null || args[i] instanceof Number || args[i] instanceof Boolean) {
+                    builder.append(args[i]);
+                } else if (args[i].getClass().isArray()) {
+                    builder.append(flatEncodeArray((Object[]) args[i], false));
+                } else {
+                    builder.append("\"").append(args[i]).append("\"");
+                }
 
-            if (i < args.length - 1) {
-                builder.append(", ");
+                if (i < args.length - 1) {
+                    builder.append(", ");
+                }
             }
         }
         return withBrackets ? ("[" + builder.toString() + "]") : builder.toString();
