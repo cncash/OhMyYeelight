@@ -14,11 +14,14 @@ import sxwang.me.ohmyyeelight.entity.Message;
 public class DefaultMessageDecoder implements MessageDecoder {
     @Override
     public Message decodeMessage(String data) {
+        if (data == null) {
+            return null;
+        }
         try {
             JSONObject jsonObject = new JSONObject(data);
             Message message = new Message();
 
-            message.setId(jsonObject.getInt("id"));
+            message.setId(jsonObject.optInt("id"));
             if (jsonObject.has("error")) {
                 JSONObject errorObject = jsonObject.getJSONObject("error");
                 Message.Error error = new Message.Error();
