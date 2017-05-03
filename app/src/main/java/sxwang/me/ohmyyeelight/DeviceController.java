@@ -123,6 +123,19 @@ public class DeviceController {
         }
     }
 
+    public void toggle() {
+        for (Device device : mDeviceSet) {
+            Command command = Commander.newBuilder()
+                    .withHost(device.getHost())
+                    .withPort(device.getPort())
+                    .build()
+                    .find(Command.class);
+            if (command != null) {
+                command.toggle();
+            }
+        }
+    }
+
     public boolean isContinueSearching() {
         return mContinueSearching;
     }

@@ -11,7 +11,7 @@
     app:layout_behavior="@string/bottom_sheet_behavior">
 
     <TextView
-        android:id="@+id/text_model"
+        android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginEnd="16dp"
@@ -22,53 +22,61 @@
         android:text="Device"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/switch1"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <sxwang.me.ohmyyeelight.ui.Knob
-        android:id="@+id/knob_brightness"
-        android:layout_width="0dp"
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintLeft_toRightOf="@+id/knob_color_temperature"
+        app:layout_constraintBottom_toBottomOf="@+id/text_title"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_model"/>
+        app:layout_constraintTop_toTopOf="@+id/text_title"/>
 
     <sxwang.me.ohmyyeelight.ui.Knob
         android:id="@+id/knob_color_temperature"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/knob_brightness"
-        app:layout_constraintTop_toBottomOf="@+id/text_model"/>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        android:text="@string/brightness"
-        app:layout_constraintLeft_toLeftOf="@+id/knob_color_temperature"
-        app:layout_constraintRight_toRightOf="@+id/knob_color_temperature"
-        app:layout_constraintTop_toBottomOf="@+id/knob_color_temperature"/>
+        android:layout_height="112dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"/>
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/color_temperature"
+        app:layout_constraintLeft_toLeftOf="@+id/knob_color_temperature"
+        app:layout_constraintRight_toRightOf="@+id/knob_color_temperature"
+        app:layout_constraintTop_toBottomOf="@+id/knob_color_temperature"/>
+
+    <SeekBar
+        android:id="@+id/brightness_seek_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/knob_color_temperature"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/knob_color_temperature"
+        app:layout_constraintTop_toTopOf="@+id/knob_color_temperature"/>
+
+    <TextView
+        android:id="@+id/brightness_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        android:text="@string/color_temperature"
-        app:layout_constraintLeft_toLeftOf="@+id/knob_brightness"
-        app:layout_constraintRight_toRightOf="@+id/knob_brightness"
-        app:layout_constraintTop_toBottomOf="@+id/knob_brightness"/>
+        android:text="@string/brightness"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
+        app:layout_constraintLeft_toLeftOf="@+id/brightness_seek_bar"
+        app:layout_constraintRight_toRightOf="@+id/brightness_seek_bar"/>
+
 
 </android.support.constraint.ConstraintLayout>

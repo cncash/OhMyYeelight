@@ -12,9 +12,7 @@ import android.graphics.Shader;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -164,7 +162,7 @@ public class Knob extends View {
             case MotionEvent.ACTION_MOVE:
                 float twisted = degree - mLastTouchDegree;
 //                Log.d(TAG, "twisted: " + (twisted));
-                mDegree = (mDegree + degree - mLastTouchDegree) % 360;
+                mDegree = (mDegree + twisted) % 360;
                 mLastTouchPoint.set(event.getX(), event.getY());
                 mLastTouchDegree = degree;
                 invalidate();
@@ -184,6 +182,14 @@ public class Knob extends View {
                 break;
         }
         return true;
+    }
+
+    public OnTwistListener getOnTwistListener() {
+        return mOnTwistListener;
+    }
+
+    public void setOnTwistListener(OnTwistListener onTwistListener) {
+        mOnTwistListener = onTwistListener;
     }
 
     interface OnTwistListener {

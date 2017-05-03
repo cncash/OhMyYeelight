@@ -1,20 +1,23 @@
 package sxwang.me.ohmyyeelight.ui;
 
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import sxwang.me.ohmyyeelight.DeviceController;
 import sxwang.me.ohmyyeelight.R;
+import sxwang.me.ohmyyeelight.Schedulers;
+import sxwang.me.ohmyyeelight.Utils;
 import sxwang.me.ohmyyeelight.entity.Device;
 
 public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemClickListener<Device>, DeviceController.OnDeviceSetChangeListener {
@@ -36,7 +39,13 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClick(null, Device.parse(""));
+                Schedulers.getInstance().runOnIoThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("toggle", "run: ");
+                        mDeviceController.toggle();
+                    }
+                });
             }
         });
 
@@ -58,27 +67,18 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
         mDeviceController.setContinueSearching(true);
         mDeviceController.addOnDeviceSetChangeListener(this);
 
-        Thread searchThread = new Thread(new Runnable() {
+
+        if (!Utils.isNetworkAvailable(this)) {
+            // wifi not connected
+            Snackbar.make(mDeviceRecyclerView, "No network connection available", Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        Schedulers.getInstance().runOnIoThread(new Runnable() {
             @Override
             public void run() {
                 mDeviceController.searchDevice();
             }
         });
-        searchThread.start();
-
-        Thread listenThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-                WifiManager.MulticastLock lock = wifiManager.createMulticastLock("ohmyyeelight");
-                lock.acquire();
-
-                mDeviceController.listenToAdvertisement();
-
-                lock.release();
-            }
-        });
-        listenThread.start();
     }
 
     @Override

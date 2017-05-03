@@ -53,4 +53,18 @@ public class Message {
             this.message = message;
         }
     }
+
+    public static final String EFFECT_SMOOTH = "smooth";
+    public static final String EFFECT_SUDDEN = "sudden";
+
+    public static final int DURATION_MIN = 30;
+    public static final int BRIGHTNESS_MIN = 1;
+    public static final int BRIGHTNESS_MAX = 100;
+
+    public static final String ACTION_INCREASE = "increase";
+    public static final String ACTION_DECREASE = "decrease";
+    public static final String ACTION_CIRCLE = "circle";
+    public static final String PROP_BRIGHT = "bright";
+    public static final String PROP_CT = "ct";
+    public static final String PROP_COLOR = "color";
 }

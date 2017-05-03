@@ -4,23 +4,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sxwang.me.ohmyyeelight.entity.Device;
 import sxwang.me.ohmyyeelight.R;
+import sxwang.me.ohmyyeelight.entity.Device;
 
 /**
  * Created by Shaoxing on 22/04/2017.
  */
 
-public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder> implements View.OnClickListener {
+public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private List<Device> mData = new ArrayList<>();
     private OnItemClickListener<Device> mOnItemClickListener;
+    private OnItemCheckedChangeListener<Device> mOnItemCheckedChangeListener;
 
     public DeviceAdapter(List<Device> data) {
         setData(data);
@@ -61,18 +63,28 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         mOnItemClickListener = onItemClickListener;
     }
 
+    public OnItemCheckedChangeListener<Device> getOnItemCheckedChangeListener() {
+        return mOnItemCheckedChangeListener;
+    }
+
+    public void setOnItemCheckedChangeListener(OnItemCheckedChangeListener<Device> onItemCheckedChangeListener) {
+        mOnItemCheckedChangeListener = onItemCheckedChangeListener;
+    }
+
     @Override
     public DeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_device, parent, false);
-        view.setOnClickListener(this);
-        return new DeviceViewHolder(view);
+        DeviceViewHolder vh = new DeviceViewHolder(inflater.inflate(R.layout.item_device, parent, false));
+        vh.itemView.setOnClickListener(this);
+        vh.mPowerSwitch.setOnCheckedChangeListener(this);
+        return vh;
     }
 
     @Override
     public void onBindViewHolder(DeviceViewHolder holder, int position) {
         Device device = mData.get(position);
         holder.itemView.setTag(device);
+        holder.mPowerSwitch.setTag(device);
         holder.bind(device);
     }
 
@@ -89,9 +101,17 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         }
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Device device = (Device) buttonView.getTag();
+        if (mOnItemCheckedChangeListener != null) {
+            mOnItemCheckedChangeListener.onItemCheckedChanged(buttonView, isChecked, device);
+        }
+    }
+
     static class DeviceViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mModelText;
-        private final Switch mPowerSwitch;
+        final TextView mModelText;
+        final Switch mPowerSwitch;
 
         public DeviceViewHolder(View itemView) {
             super(itemView);
@@ -107,6 +127,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
 
     interface OnItemClickListener<T> {
         void onItemClick(View v, T data);
+    }
+
+    interface OnItemCheckedChangeListener<T> {
+        void onItemCheckedChanged(CompoundButton v, boolean isChecked, T data);
     }
 
 }
