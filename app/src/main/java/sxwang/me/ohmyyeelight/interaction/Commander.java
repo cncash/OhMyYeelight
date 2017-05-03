@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Shaoxing on 25/04/2017.
@@ -18,11 +20,11 @@ import java.net.Socket;
 public class Commander {
     private static final String TAG = "Commander";
 
+    private static Map<String, Object> sCommandCache = new ConcurrentHashMap<>();
     private String mHost;
     private int mPort;
     private MessageEncoder mMessageEncoder;
     private MessageDecoder mMessageDecoder;
-    private Socket mSocket;
 
     private Commander(Builder builder) {
         mHost = builder.mHost;
@@ -36,6 +38,8 @@ public class Commander {
             throw new IllegalArgumentException("clazz must be an interface");
         }
         Object proxy = Proxy.newProxyInstance(Commander.class.getClassLoader(), new Class[]{clazz}, new InvocationHandler() {
+            private Socket mSocket;
+
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (mMessageEncoder == null) {
@@ -64,6 +68,16 @@ public class Commander {
             }
         });
         return (T) proxy;
+    }
+
+    public <T> T find(Class<T> clazz) {
+        String key = mHost + ":" + mPort;
+        Object command = sCommandCache.get(key);
+        if (command == null || command.getClass() != clazz) {
+            command = create(clazz);
+            sCommandCache.put(key, command);
+        }
+        return (T) command;
     }
 
     public static Builder newBuilder() {
