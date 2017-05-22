@@ -18,7 +18,7 @@ public class Schedulers {
     }
 
     private static class InstanceHolder {
-        static Schedulers sInstance = new Schedulers();
+        static final Schedulers sInstance = new Schedulers();
     }
 
     private Handler mHandler;

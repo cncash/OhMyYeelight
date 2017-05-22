@@ -1,5 +1,6 @@
 package sxwang.me.ohmyyeelight.interaction;
 
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -9,7 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Shaoxing on 25/04/2017.
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Commander {
     private static final String TAG = "Commander";
 
-    private static Map<String, Object> sCommandCache = new ConcurrentHashMap<>();
+    private static Map<String, Object> sCommandCache = new ArrayMap<>();
     private String mHost;
     private int mPort;
     private MessageEncoder mMessageEncoder;

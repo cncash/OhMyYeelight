@@ -22,11 +22,11 @@ import sxwang.me.ohmyyeelight.entity.Device;
 
 public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemClickListener<Device>, DeviceController.OnDeviceSetChangeListener {
 
-    private RecyclerView mDeviceRecyclerView;
-    private DeviceAdapter mDeviceAdapter;
-    private Handler mHandler = new Handler();
+    RecyclerView mDeviceRecyclerView;
+    DeviceAdapter mDeviceAdapter;
+    Handler mHandler = new Handler();
 
-    private DeviceController mDeviceController = DeviceController.DEFAULT_INSTANCE;
+    DeviceController mDeviceController = DeviceController.DEFAULT_INSTANCE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements DeviceAdapter.OnItemCl
 
         if (!Utils.isNetworkAvailable(this)) {
             // wifi not connected
-            Snackbar.make(mDeviceRecyclerView, "No network connection available", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mDeviceRecyclerView, R.string.no_network, Snackbar.LENGTH_LONG).show();
             return;
         }
         Schedulers.getInstance().runOnIoThread(new Runnable() {
